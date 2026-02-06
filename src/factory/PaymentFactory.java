@@ -24,7 +24,7 @@ static {
 public static Payment getPayment(PaymentType paymentType) {
     return paymentMap.get(paymentType);
 }
-    public static Payment createEmployee(PaymentProcessFactory factory){
+    public static Payment createPayment(PaymentProcessFactory factory){
 
         return factory.createPaymentMethod();
     }

@@ -1,8 +1,6 @@
 package payClass;
 
-import factory.CreditCardProcessFactory;
-import factory.PaymentFactory;
-import factory.PaymentProcessFactory;
+import factory.*;
 import services.Payment;
 import services.PaymentType;
 
@@ -23,12 +21,25 @@ public class PaymentGateway {
         return instance;
     }
 
-    public void processPayment(PaymentType paymentType,double amount,Account sender,Account receiver,String receiverDetails) {
-        Payment payment = PaymentFactory.getPayment(paymentType);
-//        Payment payment4 = PaymentFactory.createEmployee(new CreditCardProcessFactory());
-        payment.validate(receiverDetails);
-        payment.pay(sender,receiver,amount);
-//        payment4.pay(sender,receiver,amount);
+    public void processPayment(
+            PaymentType paymentType,
+            double amount,
+            Account sender,
+            Account receiver,
+            String receiverDetails) {
 
+        Payment payment = switch (paymentType) {
+            case CREDIT_CARD -> PaymentFactory.createPayment(
+                    new CreditCardProcessFactory());
+            case UPI -> PaymentFactory.createPayment(
+                    new UpiProcessorFactory());
+            case NET_BANKING -> PaymentFactory.createPayment(
+                    new NetBankingProcessFactory());
+            default -> throw new IllegalArgumentException("Invalid Payment Type");
+        };
+
+        payment.validate(receiverDetails);
+        payment.pay(sender, receiver, amount);
     }
+
 }
